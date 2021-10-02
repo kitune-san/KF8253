@@ -5,7 +5,7 @@
 // Written by Kitune-san
 //
 
-`include "KF8253_Definitions.sv"
+`include "KF8253_Definitions.svh"
 
 module KF8253_Counter (
     // Bus

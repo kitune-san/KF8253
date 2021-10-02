@@ -3,7 +3,7 @@
 // Data Bus Buffer & Read/Write Control Logic
 //
 
-`include "KF8253_Definitions.sv"
+`include "KF8253_Definitions.svh"
 
 module KF8253_Control_Logic (
     // Bus
