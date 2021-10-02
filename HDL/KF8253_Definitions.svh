@@ -1,4 +1,7 @@
 
+`ifndef KF8253_DEFINITIONS_SVH
+`define KF8253_DEFINITIONS_SVH
+
 `define ADDRESS_COUNTER_0       (2'b00)
 `define ADDRESS_COUNTER_1       (2'b01)
 `define ADDRESS_COUNTER_2       (2'b10)
@@ -20,3 +23,4 @@
 `define KF8253_CONTROL_MODE_4   (3'b100)
 `define KF8253_CONTROL_MODE_5   (3'b101)
 
+`endif
