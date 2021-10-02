@@ -110,7 +110,7 @@ module KF8253_Counter (
     // MODE
     always_ff @(negedge clock, posedge reset) begin
         if (reset)
-            select_mode <= `CONTROL_MODE_0;
+            select_mode <= `KF8253_CONTROL_MODE_0;
         else if (write_control)
             select_mode <= internal_data_bus[3:1];
         else
@@ -251,13 +251,13 @@ module KF8253_Counter (
                 start_counting <= 1'b1;
             else begin
                 casez (select_mode)
-                    `CONTROL_MODE_0: begin
+                    `KF8253_CONTROL_MODE_0: begin
                         if (write_count_step == 1'b0)
                             start_counting <= 1'b1;
                         else
                             start_counting <= 1'b0;
                     end
-                    `CONTROL_MODE_4: begin
+                    `KF8253_CONTROL_MODE_4: begin
                         if (write_count_step == 1'b0)
                             start_counting <= 1'b1;
                         else
@@ -331,7 +331,7 @@ module KF8253_Counter (
         count_period = 1'b0;
 
         casez (select_mode)
-            `CONTROL_MODE_0: begin
+            `KF8253_CONTROL_MODE_0: begin
                 if (counter_gate == 1'b0)
                     count_next = count;
 
@@ -339,12 +339,12 @@ module KF8253_Counter (
                     count_next = count_preset;
             end
 
-            `CONTROL_MODE_1: begin
+            `KF8253_CONTROL_MODE_1: begin
                 if (gate_edge)
                     count_next = count_preset;
             end
 
-            `CONTROL_MODE_2: begin
+            `KF8253_CONTROL_MODE_2: begin
                 if (counter_gate == 1'b0)
                     count_next = count;
 
@@ -355,7 +355,7 @@ module KF8253_Counter (
                     count_next = count_preset;
             end
 
-            `CONTROL_MODE_3: begin
+            `KF8253_CONTROL_MODE_3: begin
                 if (count[0] == 1'b1) begin
                     if (counter_out == 1'b0)
                         count_next = {dec2_count[16:1], 1'b0};
@@ -375,7 +375,7 @@ module KF8253_Counter (
                     count_next = count_preset;
             end
 
-            `CONTROL_MODE_4: begin
+            `KF8253_CONTROL_MODE_4: begin
                 if (counter_gate == 1'b0)
                     count_next = count;
 
@@ -383,7 +383,7 @@ module KF8253_Counter (
                     count_next = count_preset;
             end
 
-            `CONTROL_MODE_5: begin
+            `KF8253_CONTROL_MODE_5: begin
                 if (gate_edge)
                     count_next = count_preset;
             end
@@ -442,30 +442,30 @@ module KF8253_Counter (
             counter_out <= 1'b0;
         else if (start_counting == 1'b0) begin
             casez (select_mode)
-                `CONTROL_MODE_0: counter_out <= 1'b0;
-                `CONTROL_MODE_1: counter_out <= 1'b1;
-                `CONTROL_MODE_2: counter_out <= 1'b1;
-                `CONTROL_MODE_3: counter_out <= 1'b1;
-                `CONTROL_MODE_4: counter_out <= 1'b1;
-                `CONTROL_MODE_5: counter_out <= 1'b1;
+                `KF8253_CONTROL_MODE_0: counter_out <= 1'b0;
+                `KF8253_CONTROL_MODE_1: counter_out <= 1'b1;
+                `KF8253_CONTROL_MODE_2: counter_out <= 1'b1;
+                `KF8253_CONTROL_MODE_3: counter_out <= 1'b1;
+                `KF8253_CONTROL_MODE_4: counter_out <= 1'b1;
+                `KF8253_CONTROL_MODE_5: counter_out <= 1'b1;
                 default        : counter_out <= 1'b0;
             endcase
         end
         else if (count_edge) begin
             casez (select_mode)
-                `CONTROL_MODE_0: begin
+                `KF8253_CONTROL_MODE_0: begin
                     if (count_period)
                         counter_out <= 1'b1;
                     else
                         counter_out <= 1'b0;
                 end
-                `CONTROL_MODE_1: begin
+                `KF8253_CONTROL_MODE_1: begin
                     if (count_period)
                         counter_out <= 1'b1;
                     else
                         counter_out <= 1'b0;
                 end
-                `CONTROL_MODE_2: begin
+                `KF8253_CONTROL_MODE_2: begin
                     if (counter_gate == 1'b0)
                         counter_out <= 1'b1;
                     else if (count_next == 17'b0_0000_0000_0000_0001)
@@ -473,7 +473,7 @@ module KF8253_Counter (
                     else
                         counter_out <= 1'b1;
                 end
-                `CONTROL_MODE_3: begin
+                `KF8253_CONTROL_MODE_3: begin
                     if (counter_gate == 1'b0)
                         counter_out <= 1'b1;
                     else if (count_period)
@@ -481,13 +481,13 @@ module KF8253_Counter (
                     else
                         counter_out <= counter_out;
                 end
-                `CONTROL_MODE_4: begin
+                `KF8253_CONTROL_MODE_4: begin
                     if ((count_period) && (prev_count_period == 1'b0))
                         counter_out <= 1'b0;
                     else
                         counter_out <= 1'b1;
                 end
-                `CONTROL_MODE_5: begin
+                `KF8253_CONTROL_MODE_5: begin
                     if ((count_period) && (prev_count_period == 1'b0))
                         counter_out <= 1'b0;
                     else
@@ -500,13 +500,13 @@ module KF8253_Counter (
         end
         else
             casez (select_mode)
-                `CONTROL_MODE_2: begin
+                `KF8253_CONTROL_MODE_2: begin
                     if ((counter_gate == 1'b0) || (prev_counter_gate == 1'b0))
                         counter_out <= 1'b1;
                     else
                         counter_out <= counter_out;
                 end
-                `CONTROL_MODE_3: begin
+                `KF8253_CONTROL_MODE_3: begin
                     if ((counter_gate == 1'b0) || (prev_counter_gate == 1'b0))
                         counter_out <= 1'b1;
                     else
