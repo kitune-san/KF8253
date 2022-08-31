@@ -29,13 +29,15 @@ module KF8253_Counter (
     // Internal Signals
     //
     logic   [1:0]   select_read_write;
+    logic           update_counter_config;
     logic           update_select_read_write;
     logic           count_latched_flag;
     logic   [2:0]   select_mode;
     logic           select_bcd;
 
     logic           write_count_step;
-    logic   [16:0]  count_preset;
+    logic   [15:0]  count_preset;
+    logic   [16:0]  count_preset_load;
 
     logic           read_negedge;
     logic           read_count_step;
@@ -143,8 +145,6 @@ module KF8253_Counter (
             count_preset[15:0] <= count_preset[15:0];
     end
 
-    assign count_preset[16] = (count_preset[15:0] == 16'h0000) ? 1'b1 : 1'b0;
-
     always_ff @(negedge clock, posedge reset) begin
         if (reset)
             write_count_step <= 1'b0;
@@ -159,6 +159,13 @@ module KF8253_Counter (
             write_count_step <= (write_count_step) ? 1'b0 : 1'b1;
         else
             write_count_step <= write_count_step;
+    end
+
+    always_comb begin
+        count_preset_load[15:0] = (select_read_write == `RL_SELECT_MSB) ? {count_preset[15:8], 8'h00} :
+                                  (select_read_write == `RL_SELECT_LSB) ? {8'h00, count_preset[ 7:0]} :
+                                                                          count_preset[15:0];
+        count_preset_load[16]   = (count_preset_load[15:0] == 16'h0000) ? 1'b1 : 1'b0;
     end
 
 
@@ -334,12 +341,12 @@ module KF8253_Counter (
                     count_next = count;
 
                 if (load_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
 
             `KF8253_CONTROL_MODE_1: begin
                 if (gate_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
 
             `KF8253_CONTROL_MODE_2: begin
@@ -347,10 +354,10 @@ module KF8253_Counter (
                     count_next = count;
 
                 if (count_next == 16'h00)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
 
                 if (gate_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
 
             `KF8253_CONTROL_MODE_3: begin
@@ -366,11 +373,11 @@ module KF8253_Counter (
 
                 if (count_next == 17'b0_0000_0000_0000_0000) begin
                     count_period = 1'b1;
-                    count_next = count_preset;
+                    count_next = count_preset_load;
                 end
 
                 if (gate_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
 
             `KF8253_CONTROL_MODE_4: begin
@@ -378,12 +385,12 @@ module KF8253_Counter (
                     count_next = count;
 
                 if (load_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
 
             `KF8253_CONTROL_MODE_5: begin
                 if (gate_edge)
-                    count_next = count_preset;
+                    count_next = count_preset_load;
             end
             default: begin
             end
