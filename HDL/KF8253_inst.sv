@@ -54,7 +54,7 @@ module TOP (
     //
     // RESET
     //
-    always_ff @(negedge clock, posedge reset_in) begin
+    always_ff @(posedge clock, posedge reset_in) begin
         if (reset_in) begin
             res_ff <= 1'b1;
             reset  <= 1'b1;
@@ -84,7 +84,7 @@ module TOP (
     //
     // Counter #1 : Asynchronous input(clock)
     //
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             clock_1_ff <= 1'b0;
             counter_1_clock <= 1'b0;
@@ -95,7 +95,7 @@ module TOP (
         end
     end
 
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             gate_1_ff <= 1'b0;
             counter_1_gate <= 1'b0;
@@ -112,7 +112,7 @@ module TOP (
     //
     // Counter #2 : Divided clock
     //
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             counter_2_clock = 1'b0;
         else

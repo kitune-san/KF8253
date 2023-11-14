@@ -66,7 +66,7 @@ module KF8253_Counter (
     // Mode control word
     //
     // READ/LOAD
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             select_read_write  <= `RL_SELECT_MSB;
         end
@@ -94,7 +94,7 @@ module KF8253_Counter (
     assign update_counter_config = (internal_data_bus[5:4] != `RL_COUNTER_LATCH) & write_control;
 
     // Read latch
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             count_latched_flag <= 1'b0;
         else if ((write_control) && (internal_data_bus[5:4] == `RL_COUNTER_LATCH))
@@ -110,7 +110,7 @@ module KF8253_Counter (
     end
 
     // MODE
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             select_mode <= `KF8253_CONTROL_MODE_0;
         else if (update_counter_config)
@@ -120,7 +120,7 @@ module KF8253_Counter (
     end
 
     // BCD
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             select_bcd <= 1'b0;
         else if (update_counter_config)
@@ -133,7 +133,7 @@ module KF8253_Counter (
     //
     // Write count value (preset)
     //
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             count_preset[15:0] <= 16'h0000;
         else if (write_counter)
@@ -145,7 +145,7 @@ module KF8253_Counter (
             count_preset[15:0] <= count_preset[15:0];
     end
 
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             write_count_step <= 1'b0;
         else if (update_counter_config)
@@ -179,7 +179,7 @@ module KF8253_Counter (
             read_counter_data <= count_latched[7:0];
     end
 
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             prev_read_counter <= 1'b0;
         else
@@ -188,7 +188,7 @@ module KF8253_Counter (
 
     assign read_negedge = ((prev_read_counter != read_counter) & read_counter == 1'b0);
 
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             read_count_step <= 1'b0;
         else if (update_counter_config)
@@ -209,7 +209,7 @@ module KF8253_Counter (
     // Count Counter
     //
     // Count trigger
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             prev_counter_clock <= 1'b0;
         else
@@ -219,7 +219,7 @@ module KF8253_Counter (
     assign count_edge = (prev_counter_clock != counter_clock) & (counter_clock == 1'b0);
 
     // Gate trigger
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             prev_counter_gate <= 1'b0;
         else if (count_edge)
@@ -234,7 +234,7 @@ module KF8253_Counter (
     assign gate_edge = (prev_counter_gate != counter_gate) & (counter_gate == 1'b1);
 
     // Load trigger
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             load_edge <= 1'b0;
         else if (write_counter)
@@ -246,7 +246,7 @@ module KF8253_Counter (
     end
 
     // Count start/end
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             start_counting <= 1'b0;
         else if (update_counter_config)
@@ -286,7 +286,7 @@ module KF8253_Counter (
     end
 
     // First counte edge signal
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             first_count_edge    <= 1'b0;
         else if (start_counting==1'b0)
@@ -413,7 +413,7 @@ module KF8253_Counter (
     end
 
     // Update Count
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset) begin
             count <= 17'b0_0000_0000_0000_0000;
             count_latched <= 17'b0_0000_0000_0000_0000;
@@ -442,7 +442,7 @@ module KF8253_Counter (
     end
 
     // Period
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             prev_count_period <= 1'b1;
         else if (start_counting == 1'b0)
@@ -454,7 +454,7 @@ module KF8253_Counter (
     end
 
     // Output
-    always_ff @(negedge clock, posedge reset) begin
+    always_ff @(posedge clock, posedge reset) begin
         if (reset)
             counter_out <= 1'b0;
         else if (start_counting == 1'b0) begin
